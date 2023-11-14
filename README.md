@@ -100,12 +100,50 @@ This guide provides detailed instructions for creating a custom Virtual Private 
 
 1. **Security Group for EC2 Instances**:
 
-   ```hcl
-   resource "aws_security_group" "ec2_sg" {
-     vpc_id = aws_vpc.custom_vpc.id
-     // Add necessary rules here
-   }
-   ```
+<!-- # Create a security group for the EC2 instance -->
+
+resource "aws_security_group" "ec2_sg" {
+vpc_id = aws_vpc.custom_vpc.id
+
+  <!-- # Allow inbound HTTP traffic -->
+
+ingress {
+description = "HTTP"
+from_port = 80
+to_port = 80
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+}
+
+  <!-- # Allow inbound HTTPS traffic -->
+
+ingress {
+description = "HTTPS"
+from_port = 443
+to_port = 443
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+}
+
+  <!-- # Allow inbound SSH traffic from the user's IP address -->
+
+ingress {
+description = "SSH"
+from_port = 22
+to_port = 22
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"] # cidr_blocks = ["your_ip_address/32"] // Replace with your IP address if you want to restrict SSH access to just your IP address
+}
+
+  <!-- # Allow all outbound traffic -->
+
+egress {
+from_port = 0
+to_port = 0
+protocol = "-1"
+cidr_blocks = ["0.0.0.0/0"]
+}
+}
 
 ## Step 7: Launch Resources
 
